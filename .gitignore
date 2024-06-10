@@ -9,6 +9,7 @@
 [Aa]ssets/Plugins/Editor/JetBrains*
 .vs/
 .vscode
+.vsconfig
 .gradle/
 ExportedObj/
 .consulo/
