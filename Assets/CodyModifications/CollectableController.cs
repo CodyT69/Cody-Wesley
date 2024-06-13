@@ -9,9 +9,9 @@ public class CollectableController : MonoBehaviour, IDataPersister
     [System.Serializable]
     class CollectedItem
     {
-        public int _value = 1;
-        public CollectableType _type;
-        public string _itemName;
+        private int _value = 1;
+        private CollectableType _type;
+        private string _itemName;
 
         public CollectedItem(int value, CollectableType type, string name)
         {
@@ -19,9 +19,21 @@ public class CollectableController : MonoBehaviour, IDataPersister
             this._type = type;
             this._itemName = name;
         }
+        public CollectableType GetCollectableType()
+        {
+            return this._type;
+        }
+        public string GetItemName()
+        {
+            return this._itemName;
+        }
+        public int GetValue()
+        {
+            return _value;
+        }
     }
 
-    List<CollectedItem> _collectedItems = new List<CollectedItem>();
+    private List<CollectedItem> _collectedItems = new List<CollectedItem>();
 
     public void AddCollectable(CollectableItem item)
     {
@@ -30,6 +42,21 @@ public class CollectableController : MonoBehaviour, IDataPersister
         _collectedItems.Add(newItem);
         Debug.Log($"Item Collected, items count: {_collectedItems.Count}");
     }
+
+    public int GetTotalForCollectableType(CollectableType type)
+    {
+        int total = 0;
+        foreach(var item in _collectedItems)
+        {
+            if(item.GetCollectableType() == type)
+            {
+                total += item.GetValue();
+            }
+        }
+ 
+        return total;
+    }
+
 
 
     // DATA PERSISTENT SYSTEM - To save collected items between zones (levels)
