@@ -44,7 +44,9 @@ public class CollectableController : MonoBehaviour, IDataPersister
         // Update our UI to show our totals
         CollectableUI.Instance.UpdateValues(this);
 
-        PrintOutCollection();
+        SortCollection();
+        //PrintOutCollection();
+
     }
 
     public int GetTotalForCollectableType(CollectableType type)
@@ -61,24 +63,49 @@ public class CollectableController : MonoBehaviour, IDataPersister
         return total;
     }
 
-    private void PrintOutCollection()
+    private void SortCollection()
     {
         string msg;
         msg = "-----------------------\n";
         msg += "Collected Items:\n";
-        for (int i = 0; i < _collectedItems.Count; i++)
+
+        // I'm seperating coins and gems for printing
+        List<CollectedItem> coins = new List<CollectedItem>();
+        List<CollectedItem> gems = new List<CollectedItem>();
+
+        // Serperating coins and gems
+        foreach (var item in _collectedItems)
         {
-            var item = _collectedItems[i];
-            msg += $"    [{i}], Type: {item.GetCollectableType()}, Value: {item.GetValue()}\n";
+            if (item.GetCollectableType() == CollectableType.Coin)
+            {
+                coins.Add(item);
+            }
+            else if (item.GetCollectableType() == CollectableType.Gem)
+            {
+                gems.Add(item);
+            }
         }
+
+        // Sort coins by value in ascending order
+        coins.Sort((x, y) => x.GetValue().CompareTo(y.GetValue()));
+
+        // Sort gems by value in ascending order
+        gems.Sort((x, y) => x.GetValue().CompareTo(y.GetValue()));
+
+        // Print coins before gems
+        foreach (var coin in coins)
+        {
+            msg += $"Coin value: {coin.GetValue()}\n";
+        }
+
+        // Print gems after coins
+        foreach (var gem in gems)
+        {
+            msg += $"Gem: {gem.GetValue()}\n";
+        }
+
         msg += "-----------------------\n";
         Debug.Log(msg);
-    }
-
-    public void SortCollection()
-    {
-        // Sort by 2 parameters.  [1] Type, (Coin, Gem), [2] Value
-
     }
 
 
