@@ -37,10 +37,14 @@ public class CollectableController : MonoBehaviour, IDataPersister
 
     public void AddCollectable(CollectableItem item)
     {
-        Debug.Log($"Item Collected, Name: {item.GetName()}, Value: {item.GetValue()}");
         var newItem = new CollectedItem(item.GetValue(), item.GetCollectableType(), item.GetName());
         _collectedItems.Add(newItem);
-        Debug.Log($"Item Collected, items count: {_collectedItems.Count}");
+        Debug.Log($"Item Collected, Name: {item.GetName()}, Type: {item.GetCollectableType()}, Value: {item.GetValue()}, Total count: {_collectedItems.Count}");
+
+        // Update our UI to show our totals
+        CollectableUI.Instance.UpdateValues(this);
+
+        PrintOutCollection();
     }
 
     public int GetTotalForCollectableType(CollectableType type)
@@ -57,6 +61,26 @@ public class CollectableController : MonoBehaviour, IDataPersister
         return total;
     }
 
+    private void PrintOutCollection()
+    {
+        string msg;
+        msg = "-----------------------\n";
+        msg += "Collected Items:\n";
+        for (int i = 0; i < _collectedItems.Count; i++)
+        {
+            var item = _collectedItems[i];
+            msg += $"    [{i}], Type: {item.GetCollectableType()}, Value: {item.GetValue()}\n";
+        }
+        msg += "-----------------------\n";
+        Debug.Log(msg);
+    }
+
+    public void SortCollection()
+    {
+        // Sort by 2 parameters.  [1] Type, (Coin, Gem), [2] Value
+
+    }
+
 
 
     // DATA PERSISTENT SYSTEM - To save collected items between zones (levels)
@@ -64,7 +88,7 @@ public class CollectableController : MonoBehaviour, IDataPersister
     // NOTE: We cannot make this field private, it seems to break the Persistent System and will
     //       not serialize/deserialize collected items between zones!
     //[SerializeField]
-    private DataSettings dataSettings;
+    public DataSettings dataSettings;
 
 
     void OnEnable()
