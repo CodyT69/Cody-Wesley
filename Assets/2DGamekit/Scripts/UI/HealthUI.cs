@@ -52,5 +52,10 @@ namespace Gamekit2D
                 m_HealthIconAnimators[i].SetBool(m_HashActivePara, damageable.CurrentHealth >= i + 1);
             }
         }
+
+        public void BuyHealth()
+        {
+            Debug.Log("Buy Health!");
+        }
     }
 }

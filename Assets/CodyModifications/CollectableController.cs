@@ -27,9 +27,16 @@ public class CollectableController : MonoBehaviour, IDataPersister
         {
             return this._itemName;
         }
+
         public int GetValue()
         {
             return _value;
+        }
+
+        // We need to change the value when purchasing from the store
+        public void SetValue(int value)
+        {
+            _value = value;
         }
     }
 
@@ -108,6 +115,31 @@ public class CollectableController : MonoBehaviour, IDataPersister
         Debug.Log(msg);
     }
 
+    public void SpendCollectable( CollectableType type, int amount)
+    {
+        int remaining = amount;
+        for (int i=_collectedItems.Count-1; i >= 0; i--)
+        {
+            var item = _collectedItems[i];
+            if (item.GetCollectableType() == type)
+            {
+                var value = item.GetValue();
+                if (value > remaining)
+                {
+                    item.SetValue(value - remaining);
+                    return;
+                }
+                else if( value <= remaining)
+                {
+                    _collectedItems.Remove(item);
+                    remaining -= value;
+                    if (remaining == 0)
+                        return;
+                }
+            }
+        }
+    } 
+
 
 
     // DATA PERSISTENT SYSTEM - To save collected items between zones (levels)
@@ -151,5 +183,11 @@ public class CollectableController : MonoBehaviour, IDataPersister
         Debug.Log($"CollectableController.LoadData(), count={inventoryData.value.Count}");
         foreach (var i in inventoryData.value)
             _collectedItems.Add(i);
+
+        // Update Collectable UI if it exists
+        if(CollectableUI.Instance != null)
+        {
+            CollectableUI.Instance.UpdateValues(this);
+        }
     }
 }

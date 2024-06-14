@@ -44,6 +44,5 @@ public class CollectableUI : MonoBehaviour
             int gems = controller.GetTotalForCollectableType(CollectableType.Gem);
             _gemText.text = "Gems: " + gems;
         }
-        
     }
 }
